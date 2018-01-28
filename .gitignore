@@ -1,0 +1,6 @@
+build/
+test/
+node_modules/
+package.json
+config_live.json
+config_test.json
