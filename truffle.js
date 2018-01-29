@@ -1,5 +1,3 @@
-var args = process.argv.splice(2);
-
 module.exports = {
   networks: {
     development: {
