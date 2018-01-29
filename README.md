@@ -17,9 +17,9 @@ The first 24 hours is the "early bird" period. A five percent of FSN bonus will 
 In order to be fair and to maximize distribution, every ETH sent to the address of the token sale smart contract will be exchanged to FSN proportionally. The proportion will be decided by the final amount of ETH sent to the address of FSN token sale smart contract by the end of the token sale. This mechanism will enable every FUSION supporter to acquire FSN. They do not need to compete on internet speed or Ethereum gas with others to acquire the FSN tokens.
 
 Let:
-P = the proportion for every ETH that is used for exchange
-X = the ETH sent in early bird period
-Y = the ETH sent after early bird period
+P = the proportion for every ETH that is used for exchange  
+X = the ETH sent in early bird period  
+Y = the ETH sent after early bird period  
 
 If 420X+400Y is less than 20,480,000, every ETH sent in will get 420 FSN for the early bird voluntary participants or 400 FSN for the other voluntary participants. The rest of the FSN that has not been exchanged will be distributed to all the selected participants and the voluntary participants according to their amount of FNS for free.
 
