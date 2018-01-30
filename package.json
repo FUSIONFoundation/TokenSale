@@ -1,0 +1,26 @@
+{
+  "name": "tokensale",
+  "version": "1.0.0",
+  "description": "FUSION is a public blockchain devoting itself to creating an inclusive cryptofinancial platform by providing cross-chain, cross-organization, and cross-datasource smart contracts.",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "zeppelin-solidity": "^1.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FUSIONFoundation/TokenSale.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FUSIONFoundation/TokenSale/issues"
+  },
+  "homepage": "https://github.com/FUSIONFoundation/TokenSale#readme"
+}

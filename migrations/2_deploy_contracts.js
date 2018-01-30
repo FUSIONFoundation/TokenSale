@@ -1,4 +1,4 @@
-var Token = artifacts.require("./StandardToken.sol");
+var Token = artifacts.require("./FUSIONToken.sol");
 var TokenSale = artifacts.require("./ShareTokenSale.sol");
 var config = require("../config.json");
 var tokenConfig = config.token;
