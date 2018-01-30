@@ -55,6 +55,9 @@ function getUnixTime(){
 }
 
 function sleepSec(sec){
+    if(sec < 0){
+        sec = 0;
+    }
     console.log("Sleep :" + sec + " Sec");
     return sleep(sec * 1000); // sleep use ms
 }
