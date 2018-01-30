@@ -19,7 +19,7 @@ contract ShareTokenSale is Ownable {
     uint256 public startTime;
     uint256 public endTime;
     uint256 public proportion;
-    mapping(uint256 => uint256) globalAmounts;    
+    mapping(uint256 => uint256) public globalAmounts;    
 
 
     struct Stage {
@@ -106,10 +106,6 @@ contract ShareTokenSale is Ownable {
             }
         }
         revert();
-    }
-
-    function getGlobalAmount(uint256 index) public view returns(uint256) {
-        return globalAmounts[index];
     }
 
     function getPurchaserCount() public view returns(uint256) {
