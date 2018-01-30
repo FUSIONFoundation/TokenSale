@@ -167,7 +167,7 @@ contract ShareTokenSale is Ownable {
     }
     
     function buy() payable public onlyOpenTime {
-        require(msg.value > 0.1 ether);
+        require(msg.value >= 0.1 ether);
         uint256 stageIndex = getCurrentStage();
         uint256 amount = msg.value;
         PurchaserInfo storage pi = purchaserMapping[msg.sender];
