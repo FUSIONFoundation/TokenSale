@@ -5,7 +5,7 @@ var tokenConfig = config.token;
 var tokenSaleConfig = config.tokenSale;
 
 function convertDecimals(number) {    
-    return web3.toBigNumber(10).pow(tokenConfig.decimals).mul(number);
+    return web3.toBigNumber(10).pow(tokenConfig.decimals).mul(number);    
 }
 
 function getReceiverAddr(defaultAddr) {
@@ -20,10 +20,10 @@ module.exports = function(deployer, network, accounts) {
 
     var defaultAddr = accounts[0];
     var receiverAddr = getReceiverAddr(defaultAddr);    
-    var totalSaleAmout = convertDecimals(tokenSaleConfig.totalSaleAmout);
+    var totalSaleAmount = convertDecimals(tokenSaleConfig.totalSaleAmount);
     var totalSupply = convertDecimals(tokenConfig.totalSupply);
     var startTime = web3.toBigNumber(tokenSaleConfig.startTime);
-    var keepAmout = totalSupply.sub(totalSaleAmout);
+    var keepAmount = totalSupply.sub(totalSaleAmount);
     var tokenInstance = null;
     var toknSaleInstance = null;
 
@@ -33,7 +33,7 @@ module.exports = function(deployer, network, accounts) {
         tokenConfig.symbol,
         tokenConfig.decimals)
     .then(function () {
-        return deployer.deploy(TokenSale, receiverAddr, Token.address, totalSaleAmout, startTime);
+        return deployer.deploy(TokenSale, receiverAddr, Token.address, totalSaleAmount, startTime);
     })
     .then(() => {
         return Token.deployed();
@@ -44,7 +44,7 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(instance => {
         toknSaleInstance = instance;
-        return tokenInstance.transfer(toknSaleInstance.address, totalSaleAmout);
+        return tokenInstance.transfer(toknSaleInstance.address, totalSaleAmount);
     })
     .then(tx => {      
         var rates = [];
@@ -58,7 +58,7 @@ module.exports = function(deployer, network, accounts) {
     })
     .then(tx => {
         if(defaultAddr != receiverAddr) {
-            return tokenInstance.transfer(receiverAddr, keepAmout);
+            return tokenInstance.transfer(receiverAddr, keepAmount);
         }
     });
 };
