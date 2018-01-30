@@ -122,6 +122,9 @@ contract ShareTokenSale is Ownable {
         for (uint256 i = 0; i < stages.length; i++) {
             total = total.add(globalAmounts[i].mul(stages[i].rate));   
         }
+        if (total == 0) {
+            return 1 ether;
+        }
         uint256 nowProportion = totalSaleAmount.mul(1 ether).div(total);
         if (nowProportion > 1 ether) {
             nowProportion = 1 ether;
