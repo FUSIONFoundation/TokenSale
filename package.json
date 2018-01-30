@@ -8,6 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "sleep-promise": "^2.0.0",
     "zeppelin-solidity": "^1.6.0"
   },
   "scripts": {

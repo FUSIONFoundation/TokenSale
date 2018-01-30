@@ -18,6 +18,8 @@ contract ShareTokenSale is Ownable {
     uint256 public totalSaleAmount;    
     uint256 public startTime;
     uint256 public endTime;
+    uint256 public userWithdrawalStartTime;
+    uint256 public clearStartTime;
     uint256 public proportion;
     mapping(uint256 => uint256) public globalAmounts;    
 
@@ -79,14 +81,14 @@ contract ShareTokenSale is Ownable {
     }
 
     function isUserWithdrawalTime() public view returns(bool) {
-        return now > endTime.add(1 days);
+        return now > userWithdrawalStartTime;
     }
 
     function isClearTime() public view returns(bool) {
-        return now > endTime.add(15 days);
+        return now > clearStartTime;
     }
     
-    function startSale(uint256[] rates, uint256[] durations) public onlyOwner {
+    function startSale(uint256[] rates, uint256[] durations, uint256 userWithdrawalDelaySec, uint256 clearDelaySec) public onlyOwner {
         require(endTime == 0);
         require(durations.length == rates.length);
         delete stages;
@@ -97,6 +99,8 @@ contract ShareTokenSale is Ownable {
             stages.push(Stage({rate: rate, duration: duration, startTime:endTime}));
             endTime = endTime.add(duration);
         }
+        userWithdrawalStartTime = endTime.add(userWithdrawalDelaySec);
+        clearStartTime = endTime.add(clearDelaySec);
     }
     
     function getCurrentStage() public onlyOpenTime view returns(uint256) {
@@ -183,9 +187,15 @@ contract ShareTokenSale is Ownable {
         }
         pi.withdrew = true;
         var (sendEther, usedEther, getToken) = getSaleInfo(purchaser);
-        receiverAddr.transfer(usedEther);
-        token.transfer(purchaser, getToken);
-        purchaser.transfer(sendEther.sub(usedEther));        
+        if (usedEther > 0 && getToken > 0) {
+            receiverAddr.transfer(usedEther);
+            token.transfer(purchaser, getToken);
+            if (sendEther.sub(usedEther) > 0) {                
+                purchaser.transfer(sendEther.sub(usedEther));   
+            }           
+        } else {
+            purchaser.transfer(sendEther);
+        }
         return;
     }
     
@@ -200,7 +210,11 @@ contract ShareTokenSale is Ownable {
     }
     
     function clear(uint256 tokenAmount, uint256 etherAmount) payable public onlyClearTime onlyOwner {
-        token.transfer(receiverAddr, tokenAmount);
-        receiverAddr.transfer(etherAmount);
+        if (tokenAmount > 0) {
+            token.transfer(receiverAddr, tokenAmount);
+        }
+        if (etherAmount > 0) {
+            receiverAddr.transfer(etherAmount);
+        }        
     }
 }

@@ -23,6 +23,8 @@ module.exports = function(deployer, network, accounts) {
     var totalSaleAmount = convertDecimals(tokenSaleConfig.totalSaleAmount);
     var totalSupply = convertDecimals(tokenConfig.totalSupply);
     var startTime = web3.toBigNumber(tokenSaleConfig.startTime);
+    var userWithdrawalDelaySec = web3.toBigNumber(tokenSaleConfig.userWithdrawalDelaySec);
+    var clearDelaySec = web3.toBigNumber(tokenSaleConfig.clearDelaySec);
     var keepAmount = totalSupply.sub(totalSaleAmount);
     var tokenInstance = null;
     var toknSaleInstance = null;
@@ -54,7 +56,7 @@ module.exports = function(deployer, network, accounts) {
             rates.push(element.rate);
             durations.push(element.duration);
         });
-        return toknSaleInstance.startSale(rates, durations);
+        return toknSaleInstance.startSale(rates, durations, userWithdrawalDelaySec, clearDelaySec);
     })
     .then(tx => {
         if(defaultAddr != receiverAddr) {
