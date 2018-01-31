@@ -15,12 +15,14 @@ contract ShareTokenSale is Ownable {
 
     ERC20 public token;
     address public receiverAddr;
-    uint256 public totalSaleAmount;    
+    uint256 public totalSaleAmount;
+    uint256 public totalWannaBuyAmount; 
     uint256 public startTime;
     uint256 public endTime;
     uint256 public userWithdrawalStartTime;
     uint256 public clearStartTime;
-    uint256 public proportion;
+    uint256 public withdrawn;
+    uint256 public proportion = 1 ether;
     mapping(uint256 => uint256) public globalAmounts;    
 
 
@@ -53,6 +55,11 @@ contract ShareTokenSale is Ownable {
 
     modifier onlyUserWithdrawalTime {
         require(isUserWithdrawalTime());
+        _;
+    }
+
+    modifier purchasersAllWithdrawn {
+        require(withdrawn==purchaserList.length);
         _;
     }
 
@@ -117,42 +124,22 @@ contract ShareTokenSale is Ownable {
     }
 
 
-    function calcProportion() public view returns (uint256) {
-        uint256 total = 0;
-        for (uint256 i = 0; i < stages.length; i++) {
-            total = total.add(globalAmounts[i].mul(stages[i].rate));   
+    function _calcProportion() internal {
+        if (totalWannaBuyAmount == 0 || totalSaleAmount >= totalWannaBuyAmount) {
+            proportion = 1 ether;
+            return;
         }
-        if (total == 0) {
-            return 1 ether;
-        }
-        uint256 nowProportion = totalSaleAmount.mul(1 ether).div(total);
-        if (nowProportion > 1 ether) {
-            nowProportion = 1 ether;
-        }
-        return nowProportion;
-    }
-
-    function getProportion() public view returns (uint256) {
-        if (proportion > 0) {
-            return proportion;
-        }
-        return calcProportion();
-    }
-
-    function setProportion() public onlyAutoWithdrawalTime onlyOwner {
-        require(proportion==0);
-        proportion = calcProportion();
+        proportion = totalSaleAmount.mul(1 ether).div(totalWannaBuyAmount);        
     }
 
     function getSaleInfo(address purchaser) public view returns (uint256, uint256, uint256) {
         PurchaserInfo storage pi = purchaserMapping[purchaser];
         uint256 sendEther = 0;
         uint256 usedEther = 0;
-        uint256 getToken = 0;
-        uint256 nowProportion = getProportion();
+        uint256 getToken = 0;        
         for (uint256 i = 0; i < stages.length; i++) {
             sendEther = sendEther.add(pi.amounts[i]);
-            uint256 stageUsedEther = pi.amounts[i].mul(nowProportion).div(1 ether);
+            uint256 stageUsedEther = pi.amounts[i].mul(proportion).div(1 ether);
             uint256 stageGetToken = stageUsedEther.mul(stages[i].rate);
             if (stageGetToken > 0) {         
                 getToken = getToken.add(stageGetToken);
@@ -177,6 +164,8 @@ contract ShareTokenSale is Ownable {
         }
         pi.amounts[stageIndex] = pi.amounts[stageIndex].add(amount);
         globalAmounts[stageIndex] = globalAmounts[stageIndex].add(amount);
+        totalWannaBuyAmount = totalWannaBuyAmount.add(amount.mul(stages[stageIndex].rate));
+        _calcProportion();
     }
     
     function _withdrawal(address purchaser) internal {
@@ -186,6 +175,7 @@ contract ShareTokenSale is Ownable {
             return;
         }
         pi.withdrew = true;
+        withdrawn = withdrawn.add(1);
         var (sendEther, usedEther, getToken) = getSaleInfo(purchaser);
         if (usedEther > 0 && getToken > 0) {
             receiverAddr.transfer(usedEther);
@@ -209,7 +199,7 @@ contract ShareTokenSale is Ownable {
         }
     }
     
-    function clear(uint256 tokenAmount, uint256 etherAmount) payable public onlyClearTime onlyOwner {
+    function clear(uint256 tokenAmount, uint256 etherAmount) payable public purchasersAllWithdrawn onlyClearTime onlyOwner {
         if (tokenAmount > 0) {
             token.transfer(receiverAddr, tokenAmount);
         }

@@ -62,7 +62,7 @@ function sleepSec(sec){
     return sleep(sec * 1000); // sleep use ms
 }
 
-contract('Custom Data test', function(accounts) {
+contract('Flow test', function(accounts) {
     var tokenInstance = null;
     var toknSaleInstance = null;
 
@@ -109,14 +109,6 @@ contract('Custom Data test', function(accounts) {
         })
     })
 
-    
-
-    it("When Opening Time Can't setProportion", () => {
-        return toknSaleInstance.setProportion()
-        .then((tx) => {            
-            assert.equal(tx.receipt.status, '0x00', "Will failure");
-        });
-    })
 
     it("When Opening Time Can't withdrawal", () => {
         return toknSaleInstance.withdrawalFor(1, 2)
@@ -125,25 +117,15 @@ contract('Custom Data test', function(accounts) {
         });
     })
 
-    
-
-    it("Ended Can setProportion", () => {
+    it("Ended Can withdrawal", () => {
         return toknSaleInstance.endTime().then(time => { 
             console.log("EndTime:", time.toNumber());
             //wating for End
             return sleepSec(time.plus(2).sub(getUnixTime()).toNumber());
         })
         .then(() => {
-            console.log("Now:", getUnixTime());
-            return toknSaleInstance.setProportion();
+            return toknSaleInstance.withdrawalFor(1, 2)
         })
-        .then((tx) => {            
-            assert.equal(tx.receipt.status, '0x01', "Will Success");
-        });
-    })
-
-    it("Ended Can withdrawal", () => {
-        return toknSaleInstance.withdrawalFor(1, 2)
         .then((tx) => {
             assert.equal(tx.receipt.status, '0x01', "Will Success");
         });;

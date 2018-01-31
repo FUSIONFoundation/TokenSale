@@ -62,7 +62,7 @@ function sleepSec(sec){
     return sleep(sec * 1000); // sleep use ms
 }
 
-contract('Custom Data test', function(accounts) {
+contract('Fiexd Data test', function(accounts) {
     var tokenInstance = null;
     var toknSaleInstance = null;
 
@@ -145,14 +145,11 @@ contract('Custom Data test', function(accounts) {
             //wating for to end
             return sleepSec(time.plus(2).sub(getUnixTime()).toNumber());
         })
-        .then(() => {
-            return toknSaleInstance.setProportion()
-        })
         .then((tx) => {            
-            assert.equal(tx.receipt.status, '0x01', "Will success");
-            return toknSaleInstance.getProportion();
+            return toknSaleInstance.proportion();
         })
         .then(p => {
+            console.log(p);
             var promises = [];
             for(var i = 0; i < accounts.length; i++){
                 promises.push(toknSaleInstance.getSaleInfo(accounts[i]));

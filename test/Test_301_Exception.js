@@ -62,7 +62,7 @@ function sleepSec(sec){
     return sleep(sec * 1000); // sleep use ms
 }
 
-contract('Custom Data test', function(accounts) {
+contract('Exception Data test', function(accounts) {
     var tokenInstance = null;
     var toknSaleInstance = null;
 
