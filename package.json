@@ -8,6 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "mockjs": "^1.0.1-beta3",
     "sleep-promise": "^2.0.0",
     "zeppelin-solidity": "^1.6.0"
   },
