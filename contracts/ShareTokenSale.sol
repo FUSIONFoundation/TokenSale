@@ -171,7 +171,7 @@ contract ShareTokenSale is Ownable {
     function _withdrawal(address purchaser) internal {
         require(purchaser != 0x0);
         PurchaserInfo storage pi = purchaserMapping[purchaser];        
-        if (pi.withdrew) {
+        if (pi.withdrew || !pi.recorded) {
             return;
         }
         pi.withdrew = true;
